@@ -2,7 +2,8 @@ import numpy as np
 from mayavi import mlab
 
 obj_file_1 = "model.obj"
-obj_file_2 = "modelcopy.obj"
+obj_file_2 = "your_output_obj_file.obj"
+threshold = 0.1
 
 vertices = []
 faces = []
@@ -39,18 +40,62 @@ for i, (vertices, faces) in enumerate([(vertices1, faces1), (vertices2, faces2)]
             else:
                 volume2 += volume
 
+'''
+
 volumetric_difference = abs(volume1 - volume2)
+print(volume1)
+print(volume2)
 print(f"The volumetric difference between the two .obj files is {volumetric_difference} cubic units.")
+
+'''
+
+print('***')
+
+import trimesh
+
+
+
+# Load the meshes
+mesh1 = trimesh.load_mesh(obj_file_1)
+mesh2 = trimesh.load_mesh(obj_file_2)
+
+# Calculate volumes
+volume1_1 = mesh1.volume
+volume2_1 = mesh2.volume
+
+volumetric_difference = abs(volume1_1 - volume2_1)
+print(volume1)
+print(volume2)
+print(f"The volumetric difference between the two .obj files is {volumetric_difference} cubic units.")
+
+
+
+print('***')
 
 # Create the figure and axis objects
 fig = mlab.figure()
 
+if volume1 > volume2:
+    current_vert = vertices2
+    current_face = faces2
+    vertices2 = vertices1
+    faces2 = faces1
+
+    vertices1 = current_vert
+    faces1 = current_face
+
+
+
+
+
+'''
 # Plot the first object
-mlab.triangular_mesh(vertices1[:, 0], vertices1[:, 1], vertices1[:, 2], faces1, color=(1, 0, 0), opacity=0.7)
-
+mlab.triangular_mesh(vertices1[:, 0], vertices1[:, 1], vertices1[:, 2], faces1, color=(1, 0, 0), opacity=0.8)
+'''
+'''
 # Plot the second object
-mlab.triangular_mesh(vertices2[:, 0], vertices2[:, 1], vertices2[:, 2], faces2, color=(0, 1, 0), opacity=0.7)
-
+mlab.triangular_mesh(vertices2[:, 0], vertices2[:, 1], vertices2[:, 2], faces2, color=(0, 1, 0), opacity=0.8)
+'''
 # Show the volumetric difference between the two objects as a scalar field
 vol_diff_scalar = np.zeros(len(vertices1))
 vol_diff_scalar.fill(volumetric_difference)
